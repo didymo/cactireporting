@@ -2,7 +2,7 @@
 
 Prerequisite
 Python 3.6 
-PyCharm 
+PyCharm 1.13.4801
 psutil 5.5.1 (a cross-platform library aiding in retrieving information regarding running processes and system utilities)
 rrdtool 0.0.7 (PyRRD is an object-oriented wrapper for the command line graphing and round-robin database utility, rrdtool)
 
