@@ -9,7 +9,7 @@ rrdtool 0.0.7 (PyRRD is an object-oriented wrapper for the command line graphing
 
 Installation 
 psutil: https://github.com/giampaolo/psutil/blob/master/INSTALL.rst
-rrdtool: https://pypi.org/project/PyRRD/0.0.7/
+rrdtool: https://pythonhosted.org/rrdtool/install.html#debian-ubuntu
 
 Edit crontab (under root):
 At 12:00am everyday: create a rrd file 
