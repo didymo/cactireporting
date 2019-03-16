@@ -16,7 +16,7 @@ At 12:00am everyday: create a rrd file
 0 0 * * * python3 /path/to/file/generateDailyReport.py 
 
 At 11:59pm everyday: generate a graph based on that day's data in rra 
-59 11 * * * python3 /path/to/file/graph_rrd.py 
+59 23 * * * python3 /path/to/file/graph_rrd.py 
 
 At every minute of everyday 
 * * * * * python3 /path/to/file/Uptime-like_Info.py 
