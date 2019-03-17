@@ -14,15 +14,6 @@ def create_LoadAvg():
     rrdtool.create(file_name, "--start", str(int(time.time())), "--step", "60",
                    data_sources,"RRA:LAST:0.5:1:1440")
 
-def create_each_CPU():
-    cpu_num = psutil.cpu_count()
-    data_sources = []
-    for i in range(cpu_num):
-        ds_name = "CPU" + str(i)
-        data_sources.append('DS:' + ds_name + ':GAUGE:600:0:U')
-    file_name = "/var/sys_monitoring/CPUs_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd"
-    rrdtool.create(file_name, "--start", str(int(time.time())), "--step", "600",
-                   data_sources,"RRA:LAST:0.5:1:144")
 
 def create_Memory():
     data_sources = ['DS:used:GAUGE:600:0:U', 'DS:percent:GAUGE:600:0:U',
@@ -52,6 +43,24 @@ def create_CPU(cpu_num):
     rrdtool.create(file_name, "--start", str(int(time.time())), "--step", "600",
                    data_sources, "RRA:LAST:0.5:1:144")
 
+def create_Status_Processes():
+    data_sources = ['DS:running:GAUGE:600:0:U', 'DS:sleeping:GAUGE:60:0:U',
+                    'DS:idle:GAUGE:60:0:U']
+    file_name = "/var/sys_monitoring/processes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd"
+    rrdtool.create(file_name, "--start", str(int(time.time())), "--step", "60",
+                   data_sources, "RRA:LAST:0.5:1:1440")
+
+def create_Network():
+    data_sources_bytes = ['DS:sent:GAUGE:600:0:U', 'DS:recv:GAUGE:60:0:U']
+    file_name_bytes = "/var/sys_monitoring/network_bytes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd"
+    rrdtool.create(file_name_bytes, "--start", str(int(time.time())), "--step", "60",
+                   data_sources_bytes, "RRA:LAST:0.5:1:1440")
+
+    data_sources_packets = ['DS:sent:GAUGE:600:0:U', 'DS:recv:GAUGE:60:0:U']
+    file_name_packets = "/var/sys_monitoring/network_packets_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd"
+    rrdtool.create(file_name_packets, "--start", str(int(time.time())), "--step", "60",
+                   data_sources_packets, "RRA:LAST:0.5:1:1440")
+
 def main():
     #this give the avg of the computational work the system is performing in 3 intervals
     create_LoadAvg()
@@ -59,6 +68,8 @@ def main():
     create_Swap()
     for cpu_num in range(psutil.cpu_count()):
         create_CPU(cpu_num)
+    create_Status_Processes()
+    create_Network()
 
 if __name__ == '__main__':
      main()

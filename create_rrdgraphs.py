@@ -102,13 +102,63 @@ def graph_CPU(cpu_num):
                   'AREA:steal#800000:steal:STACK',
                   'AREA:guest#911eb4:guest:STACK')
 
+def graph_Processes():
+    path = "/var/sys_monitoring/processes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".png"
+    def1 = "DEF:running=/var/sys_monitoring/processes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:running:LAST"
+    def2 = "DEF:sleeping=/var/sys_monitoring/processes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:sleeping:LAST"
+    def3 = "DEF:idle=/var/sys_monitoring/processes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:idle:LAST"
+    rrdtool.graph(path, '--imgformat', 'PNG',
+                  '--width', '1274',
+                  '--height', '346',
+                  '--start', '-1d',
+                  '--end', str(int(time.time())),
+                  '--vertical-label', 'units',
+                  '--title', 'Number of processes', def1, def2, def3,
+                  'LINE1:running#004F00:running',
+                  'LINE1:sleeping#ff69b4:sleeping',
+                  'LINE1:idle#0000FF:idle')
+
+def graph_Network():
+    #create graphs that track numbers of bytes sent + recent
+    path_bytes = "/var/sys_monitoring/network_bytes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".png"
+    def1 = "DEF:sent=/var/sys_monitoring/network_bytes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:sent:LAST"
+    def2 = "DEF:recv=/var/sys_monitoring/network_bytes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:recv:LAST"
+    rrdtool.graph(path_bytes, '--imgformat', 'PNG',
+                  '--width', '1274',
+                  '--height', '346',
+                  '--start', '-1d',
+                  '--end', str(int(time.time())),
+                  '--vertical-label', 'bytes',
+                  '--title', 'Network Bytes Sent/Received', def1, def2,
+                  'LINE1:sent#004F00:sent',
+                  'LINE1:recv#ff69b4:recv',
+                  'COMMENT:125.0.0.1')
+
+    # create graphs that track numbers of packets sent + recent
+    path_packets = "/var/sys_monitoring/network_packets_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".png"
+    def1 = "DEF:sent=/var/sys_monitoring/network_packets_" + datetime.datetime.now().strftime(
+        '%Y-%m-%d') + ".rrd:sent:LAST"
+    def2 = "DEF:recv=/var/sys_monitoring/network_packets_" + datetime.datetime.now().strftime(
+        '%Y-%m-%d') + ".rrd:recv:LAST"
+    rrdtool.graph(path_packets, '--imgformat', 'PNG',
+                  '--width', '1274',
+                  '--height', '346',
+                  '--start', '-1d',
+                  '--end', str(int(time.time())),
+                  '--vertical-label', 'units',
+                  '--title', 'Network Packets Sent/Received', def1, def2,
+                  'LINE1:sent#004F00:sent',
+                  'LINE1:recv#ff69b4:recv',
+                  'COMMENT:125.0.0.1')
+
 def main():
     graph_LoadAvg()
     graph_Memory()
     graph_Swap()
     for cpu_num in range(psutil.cpu_count()):
        graph_CPU(cpu_num)
-
+    graph_Processes()
+    graph_Network()
 
 if __name__ == '__main__':
      main()
