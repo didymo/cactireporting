@@ -13,14 +13,15 @@ rrdtool: https://pythonhosted.org/rrdtool/install.html#debian-ubuntu
 
 Edit crontab (under root):
 # at every minute of the day 
-* * * * * python3 /path/to/file/LoadAvg_rrd.py
+* * * * * python3 /home/minh/PycharmProjects/Uptime-like_Information/venv/LoadAvg_rrd.py
+* * * * * python3 /home/minh/PycharmProjects/Uptime-like_Information/venv/Processes_rrd.py
 
 #at every 5 minutes of the day 
-*/5 * * * * python3 /path/to/file/Memory_rrd.py
-*/5 * * * * python3 /path/to/file/Top_Processor_rrd.py
+*/5 * * * * python3 /home/minh/PycharmProjects/Uptime-like_Information/venv/Memory_rrd.py
+*/5 * * * * python3 /home/minh/PycharmProjects/Uptime-like_Information/venv/Processor_rrd.py
 
 # at every 12:00am of everyday 
-0 0 * * * python3 /path/to/file/create_rrdfiles.py
+0 0 * * * python3 /home/minh/PycharmProjects/Uptime-like_Information/venv/create_rrdfiles.py
 
 #at every 23:59 of everyday, create the report of the day today 
-59 23 * * * python3 /path/to/file/create_rrdgraphs.py
+59 23 * * * python3 /home/minh/PycharmProjects/Uptime-like_Information/venv/create_rrdgraphs.py
