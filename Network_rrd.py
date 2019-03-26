@@ -15,19 +15,32 @@ def get_Network():
         if_network = dict()
         if_network['ip'] = ip #ip address as the key
         if_network['iface'] = k #k is network name
-        if_network['sent'] = '%.2fMB' % (data.bytes_sent/1024/1024)
-        if_network['recv'] = '%.2fMB' % (data.bytes_recv/1024/1024)
+        if_network['sent'] = data.bytes_sent/1024/1024
+        if_network['recv'] = data.bytes_recv/1024/1024
         if_network['packets_sent'] = data.packets_sent
         if_network['packets_recv'] = data.packets_recv
         if_network['errin'] = data.errin
         if_network['errout'] = data.errout
         networks.append(if_network)
-        print(if_network)
-
     return networks
 
+def update_Network():
+    networks = get_Network() #retrieve all the networks
+    file_name = "/var/sys_monitoring/update_Network_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".txt"
+    if os.path.isfile(file_name):
+        f = open(file_name, "a+")
+    else:
+        f = open(file_name, "w+")
+    timing = str(int(time.time()))[:-1] + "0"
+    for iface in networks: #for each nic card, system will write
+        f.write("rrdtool update /var/sys_monitoring/network_%s_%s.rrd -t sent:recv %s:%f:%f\n"
+        % (iface['iface'], datetime.datetime.now().strftime('%Y-%m-%d'), timing, iface["sent"], iface["recv"]))
+        os.system(("rrdtool update /var/sys_monitoring/network_%s_%s.rrd -t sent:recv %s:%f:%f\n"
+        % (iface['iface'], datetime.datetime.now().strftime('%Y-%m-%d'), timing, iface["sent"], iface["recv"])))
+    f.close()
+
 def main():
-    get_Network()
+    update_Network()
 
 if __name__ == '__main__':
     main()

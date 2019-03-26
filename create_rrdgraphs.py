@@ -118,38 +118,48 @@ def graph_Processes():
                   'LINE1:sleeping#ff69b4:sleeping',
                   'LINE1:idle#0000FF:idle')
 
-def graph_Network():
+def graph_Network(kname, ip):
     #create graphs that track numbers of bytes sent + recent
-    path_bytes = "/var/sys_monitoring/network_bytes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".png"
-    def1 = "DEF:sent=/var/sys_monitoring/network_bytes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:sent:LAST"
-    def2 = "DEF:recv=/var/sys_monitoring/network_bytes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:recv:LAST"
+    path_bytes = "/var/sys_monitoring/network_" + str(kname) + "_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".png"
+    def1 = "DEF:sent=/var/sys_monitoring/network_" + str(kname) + "_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:sent:LAST"
+    def2 = "DEF:recv=/var/sys_monitoring/network_" + str(kname) + "_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:recv:LAST"
+    cm_ip = "COMMENT:" + ip;
     rrdtool.graph(path_bytes, '--imgformat', 'PNG',
                   '--width', '1274',
                   '--height', '346',
                   '--start', '-1d',
                   '--end', str(int(time.time())),
                   '--vertical-label', 'bytes',
-                  '--title', 'Network Bytes Sent/Received', def1, def2,
+                  '--title', str(kname), def1, def2,
                   'LINE1:sent#004F00:sent',
                   'LINE1:recv#ff69b4:recv',
-                  'COMMENT:125.0.0.1')
+                  cm_ip)
 
-    # create graphs that track numbers of packets sent + recent
-    path_packets = "/var/sys_monitoring/network_packets_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".png"
-    def1 = "DEF:sent=/var/sys_monitoring/network_packets_" + datetime.datetime.now().strftime(
+def graph_Network_temp(kname, ip):
+    # create graphs that track numbers of bytes sent + recent
+    path_bytes = "/var/sys_monitoring/network_temp_" + str(kname) + "_" + datetime.datetime.now().strftime(
+        '%Y-%m-%d') + ".png"
+    def1 = "DEF:sent=/var/sys_monitoring/network_temp_" + str(kname) + "_" + datetime.datetime.now().strftime(
         '%Y-%m-%d') + ".rrd:sent:LAST"
-    def2 = "DEF:recv=/var/sys_monitoring/network_packets_" + datetime.datetime.now().strftime(
+    def2 = "DEF:recv=/var/sys_monitoring/network_temp_" + str(kname) + "_" + datetime.datetime.now().strftime(
         '%Y-%m-%d') + ".rrd:recv:LAST"
-    rrdtool.graph(path_packets, '--imgformat', 'PNG',
+    def3 = "DEF:sent_per_sec=/var/sys_monitoring/network_temp_" + str(kname) + "_" + datetime.datetime.now().strftime(
+        '%Y-%m-%d') + ".rrd:sent_per_sec:LAST"
+    def4 = "DEF:recv_per_sec=/var/sys_monitoring/network_temp_" + str(kname) + "_" + datetime.datetime.now().strftime(
+        '%Y-%m-%d') + ".rrd:recv_per_sec:LAST"
+    cm_ip = "COMMENT:" + ip;
+    rrdtool.graph(path_bytes, '--imgformat', 'PNG',
                   '--width', '1274',
                   '--height', '346',
                   '--start', '-1d',
                   '--end', str(int(time.time())),
-                  '--vertical-label', 'units',
-                  '--title', 'Network Packets Sent/Received', def1, def2,
-                  'LINE1:sent#004F00:sent',
-                  'LINE1:recv#ff69b4:recv',
-                  'COMMENT:125.0.0.1')
+                  '--vertical-label', 'bytes',
+                  '--title', str(kname), def1, def2, def4, def4,
+                  'AREA1:sent#004F00:sent',
+                  'AREA1:recv#ff69b4:recv',
+                  'LINE1:sent_per_sec#004F00:sent_per_sec',
+                  'LINE1:recv_per_sec#ff69b4:recv_per_sec',
+                    cm_ip)
 
 def main():
     graph_LoadAvg()
@@ -158,7 +168,8 @@ def main():
     for cpu_num in range(psutil.cpu_count()):
        graph_CPU(cpu_num)
     graph_Processes()
-    graph_Network()
+    for k, v in psutil.net_if_addrs().items():
+        graph_Network(k, v[0].address)  # for each nic card, a rrdfile is created
 
 if __name__ == '__main__':
      main()

@@ -37,7 +37,14 @@ def store_Processes(list_processes):
     write_Running_Sleeping_Idle(idle_list, csv_idle)
 
 def get_Running_Sleeping_Idle(running, sleeping, idle):
+    file_name = "/var/sys_monitoring/update_processes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".txt"
+    if os.path.isfile(file_name):
+        f = open(file_name, "a+")
+    else:
+        f = open(file_name, "w+")
     timing = str(int(time.time()))[:-1] + "0"
+    f.write("rrdtool update /var/sys_monitoring/processes_%s.rrd -t running:sleeping:idle %s:%d:%d:%d\n"
+        % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, running, sleeping, idle))
     os.system("rrdtool update /var/sys_monitoring/processes_%s.rrd -t running:sleeping:idle %s:%d:%d:%d\n"
         % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, running, sleeping, idle))
 
