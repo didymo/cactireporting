@@ -7,11 +7,11 @@ import time
 import rrdtool
 import psutil
 
-def create_LoadAvg():
+def create_LoadAvg(time_create):
     data_sources = ['DS:load_1min:GAUGE:60:0:U', 'DS:load_5min:GAUGE:60:0:U',
                     'DS:load_15min:GAUGE:60:0:U']
     file_name = "/var/sys_monitoring/loadavg_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd"
-    rrdtool.create(file_name, "--start", str(int(time.time())), "--step", "60",
+    rrdtool.create(file_name, "--start", time_create, "--step", "60",
                    data_sources,"RRA:LAST:0.5:1:1440")
 
 
@@ -71,15 +71,15 @@ def main():
     else:
         f = open(file_name, "w+")
     f.write("Printed Recorded at %s - %d\n" % (datetime.datetime.now(), int(time.time())))
-    create_LoadAvg()
-    create_Memory()
-    create_Swap()
-    for cpu_num in range(psutil.cpu_count()):
-        create_CPU(cpu_num)
-    create_Status_Processes()
-    for k, v in psutil.net_if_addrs().items():
-        create_Network(k)#for each nic card, a rrdfile is created
-        create_Network_temp(k)
+    create_LoadAvg(str(int(time.time())))
+    #create_Memory()
+    #create_Swap()
+    #for cpu_num in range(psutil.cpu_count()):
+    #    create_CPU(cpu_num)
+    #create_Status_Processes()
+    #for k, v in psutil.net_if_addrs().items():
+    #    create_Network(k)#for each nic card, a rrdfile is created
+    #    create_Network_temp(k)
 
     f.write("Printed Recorded at %s - %d\n" % (datetime.datetime.now(), int(time.time())))
     f.close()
