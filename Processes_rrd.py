@@ -4,6 +4,7 @@ import datetime
 import time
 import psutil
 from pathlib import Path
+from create_rrdfiles import create_Status_Processes
 import csv
 
 #this script is counting the number of running and sleeping processes
@@ -42,6 +43,14 @@ def get_Running_Sleeping_Idle(running, sleeping, idle):
         f = open(file_name, "a+")
     else:
         f = open(file_name, "w+")
+    file_rrd = "/var/sys_monitoring/processes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd";
+
+    try:
+        check_file = open(file_rrd, 'r')
+    except FileNotFoundError:
+        create_Status_Processes(str(int(time.time()) - 60)[:-1] + "0")  # create a file 60sec before so its updating
+        f.write("TEMPORARY CREATED at "+ str(int(time.time()) - 60)[:-1] + "0" +  " 60 seconds before " + str(int(time.time()))[:-1] +"0" + "\n")
+
     timing = str(int(time.time()))[:-1] + "0"
     f.write("rrdtool update /var/sys_monitoring/processes_%s.rrd -t running:sleeping:idle %s:%d:%d:%d\n"
         % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, running, sleeping, idle))

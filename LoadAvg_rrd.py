@@ -17,8 +17,8 @@ def getLoadAvg():
     try:
         check_file = open(file_rrd, 'r')
     except FileNotFoundError:
-        create_LoadAvg(str(int(time.time()) - 60))  # create a file 60sec before so its updating
-        f.write("TEMPORARY CREATED")
+        create_LoadAvg(str(int(time.time()) - 60)[:-1] + "0")  # create a file 60sec before so its updating
+        f.write("TEMPORARY CREATED at "+ str(int(time.time()) - 60)[:-1] + "0" +  " 60 seconds before " + str(int(time.time()))[:-1] +"0" + "\n")
     timing = str(int(time.time()))[:-1] + "0"
     f.write("rrdtool update /var/sys_monitoring/loadavg_%s.rrd -t load_1min:load_5min:load_15min %s:%.2f:%.2f:%.2f\n"
           % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, load_avg[0], load_avg[1], load_avg[2]))

@@ -5,6 +5,8 @@ import datetime
 import time
 from pathlib import Path
 import psutil
+from create_rrdfiles import create_Memory
+from create_rrdfiles import create_Swap
 
 def virtual_memory():
     mem = psutil.virtual_memory()
@@ -28,6 +30,14 @@ def get_Memory ():
         f = open(file_name, "a+")
     else:
         f = open(file_name, "w+")
+    file_rrd = "/var/sys_monitoring/memory_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd";
+
+    try:
+        check_file = open(file_rrd, 'r')
+    except FileNotFoundError:
+        create_Memory(str(int(time.time()) - 60)[:-1] + "0")  # create a file 60sec before so its updating
+        f.write("TEMPORARY CREATED at "+ str(int(time.time()) - 60)[:-1] + "0" +  " 60 seconds before " + str(int(time.time()))[:-1] +"0" + "\n")
+
     timing = str(int(time.time()))[:-1] + "0"
     f.write("rrdtool update /var/sys_monitoring/memory_%s.rrd -t used:percent:active:inactive:buffers:cached:available:free:shared %s:%s:%s:%s:%s:%s:%s:%s:%s:%s\n"
           % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, virtual_memory()["used"], virtual_memory()['percent'], virtual_memory()["active"],
@@ -59,6 +69,15 @@ def get_Swap():
         f = open(file_name, "a+")
     else:
         f = open(file_name, "w+")
+    file_rrd = "/var/sys_monitoring/swap_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd";
+
+    try:
+        check_file = open(file_rrd, 'r')
+    except FileNotFoundError:
+        create_Swap(str(int(time.time()) - 60)[:-1] + "0")  # create a file 60sec before so its updating
+        print("TEMPORARY CREATED at " + str(int(time.time()) - 60)[:-1] + "0" +  "\n")
+        f.write("TEMPORARY CREATED at "+ str(int(time.time()) - 60)[:-1] + "0" +  " 60 seconds before " + str(int(time.time()))[:-1] +"0" + "\n")
+
     timing = str(int(time.time()))[:-1] + "0"
     f.write("rrdtool update /var/sys_monitoring/swap_%s.rrd -t total:used:free:percent:sin:sout %s:%s:%s:%s:%s:%s:%s\n"
           % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, swap_memory()["total"], swap_memory()["used"], swap_memory()["free"],

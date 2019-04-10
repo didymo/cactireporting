@@ -3,6 +3,7 @@
 import os
 import datetime
 import time
+from create_rrdfiles import create_CPU
 from pathlib import Path
 import psutil
 
@@ -31,6 +32,14 @@ def get_CPU_percent(CPU_dict, cpu_num):
         f = open(file_name, "a+")
     else:
         f = open(file_name, "w+")
+    file_rrd = "/var/sys_monitoring/CPU" + str(cpu_num) + "_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd";
+
+    try:
+        check_file = open(file_rrd, 'r')
+    except FileNotFoundError:
+        create_CPU(cpu_num, str(int(time.time()) - 60)[:-1] + "0")  # create a file 60sec before so its updating
+        f.write("TEMPORARY CREATED at "+ str(int(time.time()) - 60)[:-1] + "0" +  " 60 seconds before " + str(int(time.time()))[:-1] +"0" + "\n")
+
     timing = str(int(time.time()))[:-1] + "0"
     f.write("rrdtool update /var/sys_monitoring/CPU%d_%s.rrd -t user:nice:system:idle:iowait:irq:softirq:steal:guest %s:%s:%s:%s:%s:%s:%s:%s:%s:%s\n"
           % (cpu_num, datetime.datetime.now().strftime('%Y-%m-%d'), timing, CPU_dict["user"], CPU_dict["nice"], CPU_dict["system"], CPU_dict["idle"],

@@ -166,10 +166,10 @@ def main():
     #graph_Memory()
     #graph_Swap()
     #for cpu_num in range(psutil.cpu_count()):
-     #  graph_CPU(cpu_num)
+      # graph_CPU(cpu_num)
     #graph_Processes()
     #for k, v in psutil.net_if_addrs().items():
-     #   graph_Network(k, v[0].address)  # for each nic card, a rrdfile is created
+      #  graph_Network(k, v[0].address)  # for each nic card, a rrdfile is created
 
 if __name__ == '__main__':
      main()

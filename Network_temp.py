@@ -4,6 +4,7 @@ import datetime
 import time
 import psutil
 from pathlib import Path
+from create_rrdfiles import create_Network_temp
 
 def get_Network():
     #Before
@@ -51,6 +52,14 @@ def update_Network():
         f = open(file_name, "w+")
     timing = str(int(time.time()))[:-1] + "0"
     for nic in nic_list:  # for each nic card, system will write
+        file_rrd = "/var/sys_monitoring/network_temp_" + nic['name'] + "_"  + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd";
+
+        try:
+            check_file = open(file_rrd, 'r')
+        except FileNotFoundError:
+            create_Network_temp(nic['name'], str(int(time.time()) - 60)[:-1] + "0")  # create a file 60sec before so its updating
+        f.write("TEMPORARY CREATED at "+ str(int(time.time()) - 60)[:-1] + "0" +  " 60 seconds before " + str(int(time.time()))[:-1] +"0" + "\n")
+
         f.write("rrdtool update /var/sys_monitoring/network_temp_%s_%s.rrd -t sent:recv:sent_per_sec:recv_per_sec %s:%f:%f:%f:%f\n"
                 % (nic['name'], datetime.datetime.now().strftime('%Y-%m-%d'), timing, nic["sent"], nic["recv"],
                    nic['sent_per_sec'], nic['recv_per_sec']))
