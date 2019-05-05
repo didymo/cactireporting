@@ -5,6 +5,7 @@ import datetime
 import time
 from pathlib import Path
 import psutil
+import subprocess
 from create_rrdfiles import create_Memory
 from create_rrdfiles import create_Swap
 
@@ -45,11 +46,10 @@ def get_Memory ():
              virtual_memory()['shared']))
     f.close()
 
-    os.system("rrdtool update /var/sys_monitoring/memory_%s.rrd -t used:percent:active:inactive:buffers:cached:available:free:shared %s:%s:%s:%s:%s:%s:%s:%s:%s:%s\n"
-          % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, virtual_memory()["used"], virtual_memory()["percent"], virtual_memory()["active"],
-             virtual_memory()["inactive"], virtual_memory()["buffers"], virtual_memory()["cached"], virtual_memory()["available"], virtual_memory()["free"],
-             virtual_memory()["shared"]))
-
+    try: 
+        subprocess.check_output("rrdtool update /var/sys_monitoring/memory_%s.rrd -t used:percent:active:inactive:buffers:cached:available:free:shared %s:%s:%s:%s:%s:%s:%s:%s:%s:%s\n" % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, virtual_memory()["used"], virtual_memory()["percent"], virtual_memory()["active"], virtual_memory()["inactive"], virtual_memory()["buffers"], virtual_memory()["cached"], virtual_memory()["available"], virtual_memory()["free"], virtual_memory()["shared"]), shell=True)
+    except subprocess.CalledProcessError as err: 
+        createLog(err.returncode + ": " + err.output + " while update Memory at " + timing)
 
 def swap_memory():
     swap = psutil.swap_memory()
@@ -80,14 +80,14 @@ def get_Swap():
 
     timing = str(int(time.time()))[:-1] + "0"
     f.write("rrdtool update /var/sys_monitoring/swap_%s.rrd -t total:used:free:percent:sin:sout %s:%s:%s:%s:%s:%s:%s\n"
-          % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, swap_memory()["total"], swap_memory()["used"], swap_memory()["free"],
-             swap_memory()["percent"], swap_memory()["sin"], swap_memory()["sout"]))
+          % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, swap_memory()["total"], swap_memory()["used"], swap_memory()["free"], swap_memory()["percent"], swap_memory()["sin"], swap_memory()["sout"]))
     f.close()
+    try: 
+        subprocess.check_output("rrdtool update /var/sys_monitoring/swap_%s.rrd -t total:used:free:percent:sin:sout %s:%s:%s:%s:%s:%s:%s\n" % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, swap_memory()["total"], swap_memory()["used"], swap_memory()["free"], swap_memory()["percent"], swap_memory()["sin"], swap_memory()["sout"]), shell=True)
+    except subprocess.CalledProcessError as err: 
+        createLog(err.returncode + ": " + err.output + " while update Swap at " + timing)
 
-    os.system("rrdtool update /var/sys_monitoring/swap_%s.rrd -t total:used:free:percent:sin:sout %s:%s:%s:%s:%s:%s:%s\n"
-          % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, swap_memory()["total"], swap_memory()["used"], swap_memory()["free"],
-             swap_memory()["percent"], swap_memory()["sin"], swap_memory()["sout"]))
-
+    
 def main():
     get_Memory()
     get_Swap()

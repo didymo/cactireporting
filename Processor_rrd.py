@@ -1,11 +1,12 @@
 #!/usr/bin/python3
-
 import os
 import datetime
 import time
 from create_rrdfiles import create_CPU
 from pathlib import Path
 import psutil
+import subprocess
+from createLogFile import createLog
 
 def list_CPUs():
     cpus_percent_list = [] #this is a list of dictionaries where each dictionary contains a CPU
@@ -45,10 +46,13 @@ def get_CPU_percent(CPU_dict, cpu_num):
           % (cpu_num, datetime.datetime.now().strftime('%Y-%m-%d'), timing, CPU_dict["user"], CPU_dict["nice"], CPU_dict["system"], CPU_dict["idle"],
              CPU_dict["iowait"],CPU_dict["irq"], CPU_dict["softirq"], CPU_dict["steal"], CPU_dict["guest"]))
     f.close()
-    os.system("rrdtool update /var/sys_monitoring/CPU%d_%s.rrd -t user:nice:system:idle:iowait:irq:softirq:steal:guest %s:%s:%s:%s:%s:%s:%s:%s:%s:%s\n"
+    try: 
+        subprocess.check_output("rrdtool update /var/sys_monitoring/CPU%d_%s.rrd -t user:nice:system:idle:iowait:irq:softirq:steal:guest %s:%s:%s:%s:%s:%s:%s:%s:%s:%s\n"
           % (cpu_num, datetime.datetime.now().strftime('%Y-%m-%d'), timing, CPU_dict["user"], CPU_dict["nice"], CPU_dict["system"], CPU_dict["idle"],
-             CPU_dict["iowait"],CPU_dict["irq"], CPU_dict["softirq"], CPU_dict["steal"], CPU_dict["guest"]))
-
+             CPU_dict["iowait"],CPU_dict["irq"], CPU_dict["softirq"], CPU_dict["steal"], CPU_dict["guest"]), shell=True)
+    except subprocess.CalledProcessError as err: 
+        createLog(err.returncode + ": " + err.output + " while update CPU at " + timing)
+    
 def main():
     #this give a list of all the processes the system is running
      for CPU_num, CPU_dict in enumerate(list_CPUs()): #this calls the function that update each CPU in a loop for all CPU
