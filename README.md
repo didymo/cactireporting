@@ -18,9 +18,9 @@ Edit crontab (under root):
 
 #at every 5 minutes of the day 
 */5 * * * * python3 /path/to/file/Memory_rrd.py
-*/5 * * * * python3 /path/to/file/Processor_rrd.py
-*/5 * * * * python3 /path/to/file/Network_rrd.py
-*/5 * * * * python3 /path/to/file/Network_temp_rrd.py
+# */5 * * * * python3 /path/to/file/Processor_rrd.py
+# */5 * * * * python3 /path/to/file/Network_rrd.py
+# */5 * * * * python3 /path/to/file/Network_temp_rrd.py
 
 # at every 12:00am of everyday 
 0 0 * * * python3 /path/to/file/create_rrdfiles.py
