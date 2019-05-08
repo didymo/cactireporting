@@ -51,7 +51,7 @@ def get_CPU_percent(CPU_dict, cpu_num):
           % (cpu_num, datetime.datetime.now().strftime('%Y-%m-%d'), timing, CPU_dict["user"], CPU_dict["nice"], CPU_dict["system"], CPU_dict["idle"],
              CPU_dict["iowait"],CPU_dict["irq"], CPU_dict["softirq"], CPU_dict["steal"], CPU_dict["guest"]), shell=True)
     except subprocess.CalledProcessError as err: 
-        createLog(err.returncode + ": " + err.output + " while update CPU at " + timing)
+        createLog(str(err.returncode) + ": " + err.output + " while update CPU at " + timing)
     
 def main():
     #this give a list of all the processes the system is running

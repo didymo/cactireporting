@@ -49,7 +49,7 @@ def get_Memory ():
     try: 
         subprocess.check_output("rrdtool update /var/sys_monitoring/memory_%s.rrd -t used:percent:active:inactive:buffers:cached:available:free:shared %s:%s:%s:%s:%s:%s:%s:%s:%s:%s\n" % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, virtual_memory()["used"], virtual_memory()["percent"], virtual_memory()["active"], virtual_memory()["inactive"], virtual_memory()["buffers"], virtual_memory()["cached"], virtual_memory()["available"], virtual_memory()["free"], virtual_memory()["shared"]), shell=True)
     except subprocess.CalledProcessError as err: 
-        createLog(err.returncode + ": " + err.output + " while update Memory at " + timing)
+        createLog(str(err.returncode) + ": " + err.output + " while update Memory at " + timing)
 
 def swap_memory():
     swap = psutil.swap_memory()
@@ -75,7 +75,6 @@ def get_Swap():
         check_file = open(file_rrd, 'r')
     except FileNotFoundError:
         create_Swap(str(int(time.time()) - 60)[:-1] + "0")  # create a file 60sec before so its updating
-        print("TEMPORARY CREATED at " + str(int(time.time()) - 60)[:-1] + "0" +  "\n")
         f.write("TEMPORARY CREATED at "+ str(int(time.time()) - 60)[:-1] + "0" +  " 60 seconds before " + str(int(time.time()))[:-1] +"0" + "\n")
 
     timing = str(int(time.time()))[:-1] + "0"

@@ -5,6 +5,8 @@ import time
 import psutil
 from pathlib import Path
 from create_rrdfiles import create_Status_Processes
+from createLogFile import createLog
+import subprocess
 import csv
 
 #this script is counting the number of running and sleeping processes
@@ -54,8 +56,11 @@ def get_Running_Sleeping_Idle(running, sleeping, idle):
     timing = str(int(time.time()))[:-1] + "0"
     f.write("rrdtool update /var/sys_monitoring/processes_%s.rrd -t running:sleeping:idle %s:%d:%d:%d\n"
         % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, running, sleeping, idle))
-    os.system("rrdtool update /var/sys_monitoring/processes_%s.rrd -t running:sleeping:idle %s:%d:%d:%d\n"
+    try: 
+        subprocess.check_output("rrdtool update /var/sys_monitoring/processes_%s.rrd -t running:sleeping:idle %s:%d:%d:%d\n"
         % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, running, sleeping, idle))
+    except subprocess.CalledProcessError as err: 
+        createLog(str(err.returncode) + ": " + err.output + " while update CPU at " + timing)
 
 def write_Running_Sleeping_Idle(list_processes, csv_path):
     try:
