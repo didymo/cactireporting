@@ -22,8 +22,6 @@ Edit crontab (under root):
 # */5 * * * * python3 /path/to/file/Network_rrd.py
 # */5 * * * * python3 /path/to/file/Network_temp_rrd.py
 
-# at every 12:00am of everyday 
-0 0 * * * python3 /path/to/file/create_rrdfiles.py
-
 #at every 23:59 of everyday, create the report of the day today 
 59 23 * * * python3 /path/to/file/create_rrdgraphs.py
+59 23 * * * python3 /path/to/file/create_rrdfiles.py
