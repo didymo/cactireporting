@@ -47,21 +47,23 @@ def get_Running_Sleeping_Idle(running, sleeping, idle):
         f = open(file_name, "w+")
     file_rrd = "/var/sys_monitoring/processes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd";
 
-    try:
+    try:#try IF processes_DATE.rrd file exists 
         check_file = open(file_rrd, 'r')
     except FileNotFoundError:
-        create_Status_Processes(str(int(time.time()) - 60)[:-1] + "0")  # create a file 60sec before so its updating
-        f.write("TEMPORARY CREATED at "+ str(int(time.time()) - 60)[:-1] + "0" +  " 60 seconds before " + str(int(time.time()))[:-1] +"0" + "\n")
+        create_Status_Processes(str(int(time.time()) - 60)[:-1] + "0")  # create a file 60sec before so its updating IF NOT EXIST
+        f.write("TEMPORARY CREATED at "+ str(int(time.time()) - 60)[:-1] + "0" +  " 60 seconds before " + str(int(time.time()))[:-1] +"0" + "\n") #create file 60secs before THIS MOMENT so can UPDATE at THIS MOMENT due to the 60 heartbeat
 
-    timing = str(int(time.time()))[:-1] + "0"
+    timing = str(int(time.time()))[:-1] + "0" #get the timing of THIS MOMENT 
     f.write("rrdtool update /var/sys_monitoring/processes_%s.rrd -t running:sleeping:idle %s:%d:%d:%d\n"
         % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, running, sleeping, idle))
-    try: 
+	#write the rrdtool update syntax to update_processes_DATE.txt 
+"""
+    try: #check terminal return of RRDTOOL UPDATE 
         subprocess.check_output("rrdtool update /var/sys_monitoring/processes_%s.rrd -t running:sleeping:idle %s:%d:%d:%d\n"
         % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, running, sleeping, idle))
-    except subprocess.CalledProcessError as err: 
+    except subprocess.CalledProcessError as err: #write terminal return in 'logfile.txt '
         createLog(str(err.returncode) + ": " + err.output + " while update CPU at " + timing)
-
+"""
 def write_Running_Sleeping_Idle(list_processes, csv_path):
     try:
         with open(csv_path, 'w') as csvfile:

@@ -1,4 +1,6 @@
 import datetime
+import os
+import sys
 import rrdtool
 import time
 import psutil
@@ -9,7 +11,9 @@ def graph_LoadAvg():
     def1 = "DEF:load_1min=/var/sys_monitoring/loadavg_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:load_1min:LAST"
     def2 = "DEF:load_5min=/var/sys_monitoring/loadavg_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:load_5min:LAST"
     def3 = "DEF:load_15min=/var/sys_monitoring/loadavg_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:load_15min:LAST"
-    rrdtool.graph(path, '--imgformat', 'PNG',
+    file_path = path[:-3] + "rrd"
+    if os.path.isfile(file_path):
+    	rrdtool.graph(path, '--imgformat', 'PNG',
                   '--width', '1274',
                   '--height', '346',
                   '--start', '-1d',
@@ -19,7 +23,7 @@ def graph_LoadAvg():
                   'LINE1:load_1min#0000FF:Load_1min',
                   'LINE1:load_5min#004F00:Load_5min',
                   'LINE1:load_15min#ff69b4:Load_15min')
-    createLog("Created " + path)
+    	createLog("Created " + path)
 
 def graph_Memory():
     path = "/var/sys_monitoring/memory_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".png"
@@ -32,7 +36,9 @@ def graph_Memory():
     def7 = "DEF:available=/var/sys_monitoring/memory_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:available:LAST"
     def8 = "DEF:free=/var/sys_monitoring/memory_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:free:LAST"
     def9 = "DEF:shared=/var/sys_monitoring/memory_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:shared:LAST"
-    rrdtool.graph(path, '--imgformat', 'PNG',
+    file_path = path[:-3] + "rrd"
+    if os.path.isfile(file_path):
+    	rrdtool.graph(path, '--imgformat', 'PNG',
                   '--width', '1274',
                   '--height', '346',
                   '--start', '-1d',
@@ -49,7 +55,7 @@ def graph_Memory():
                   'AREA:available#a9a9a9:available:STACK',
                   'AREA:free#ffffff:free:STACK',
                   'AREA:shared#911eb4:shared:STACK')
-    createLog("Created " + path)
+    	createLog("Created " + path)
 
 def graph_Swap():
     path = "/var/sys_monitoring/swap_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".png"
@@ -59,7 +65,9 @@ def graph_Swap():
     def4 = "DEF:percent=/var/sys_monitoring/swap_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:percent:LAST"
     def5 = "DEF:sin=/var/sys_monitoring/swap_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:sin:LAST"
     def6 = "DEF:sout=/var/sys_monitoring/swap_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:sout:LAST"
-    rrdtool.graph(path, '--imgformat', 'PNG',
+    file_path = path[:-3] + "rrd"
+    if os.path.isfile(file_path):
+    	rrdtool.graph(path, '--imgformat', 'PNG',
                   '--width', '1274',
                   '--height', '346',
                   '--start', '-1d',
@@ -73,7 +81,7 @@ def graph_Swap():
                   'LINE1:percent#000000:percent',
                   'AREA:sin#ffe119:sin:STACK',
                   'AREA:sout#4363d8:sout:STACK')
-    createLog("Created " + path)
+    	createLog("Created " + path)
 
 def graph_CPU(cpu_num):
     cpu_name = "CPU" + str(cpu_num)
@@ -87,7 +95,9 @@ def graph_CPU(cpu_num):
     def7 = "DEF:softirq=/var/sys_monitoring/" + cpu_name + "_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:softirq:LAST"
     def8 = "DEF:steal=/var/sys_monitoring/" + cpu_name + "_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:steal:LAST"
     def9 = "DEF:guest=/var/sys_monitoring/" + cpu_name + "_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:guest:LAST"
-    rrdtool.graph(path, '--imgformat', 'PNG',
+    file_path = path[:-3] + "rrd"  
+    if os.path.isfile(file_path):
+    	rrdtool.graph(path, '--imgformat', 'PNG',
                   '--width', '1274',
                   '--height', '346',
                   '--start', '-1d',
@@ -104,14 +114,16 @@ def graph_CPU(cpu_num):
                   'AREA:softirq#a9a9a9:softirq:STACK',
                   'AREA:steal#800000:steal:STACK',
                   'AREA:guest#911eb4:guest:STACK')
-    createLog("Created " + path)
+    	createLog("Created " + path)
 
 def graph_Processes():
     path = "/var/sys_monitoring/processes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".png"
     def1 = "DEF:running=/var/sys_monitoring/processes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:running:LAST"
     def2 = "DEF:sleeping=/var/sys_monitoring/processes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:sleeping:LAST"
     def3 = "DEF:idle=/var/sys_monitoring/processes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:idle:LAST"
-    rrdtool.graph(path, '--imgformat', 'PNG',
+    file_path = path[:-3] + "rrd" 
+    if os.path.isfile(file_path):
+    	rrdtool.graph(path, '--imgformat', 'PNG',
                   '--width', '1274',
                   '--height', '346',
                   '--start', '-1d',
@@ -121,7 +133,7 @@ def graph_Processes():
                   'LINE1:running#004F00:running',
                   'LINE1:sleeping#ff69b4:sleeping',
                   'LINE1:idle#0000FF:idle')
-    createLog("Created " + path)
+    	createLog("Created " + path)
 
 def graph_Network(kname, ip):
     #create graphs that track numbers of bytes sent + recent
@@ -129,7 +141,9 @@ def graph_Network(kname, ip):
     def1 = "DEF:sent=/var/sys_monitoring/network_" + str(kname) + "_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:sent:LAST"
     def2 = "DEF:recv=/var/sys_monitoring/network_" + str(kname) + "_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:recv:LAST"
     cm_ip = "COMMENT:" + ip;
-    rrdtool.graph(path_bytes, '--imgformat', 'PNG',
+    file_path = path_bytes[:-3] + "rrd"  
+    if os.path.isfile(file_path): 
+    	rrdtool.graph(path_bytes, '--imgformat', 'PNG',
                   '--width', '1274',
                   '--height', '346',
                   '--start', '-1d',
@@ -139,7 +153,7 @@ def graph_Network(kname, ip):
                   'LINE1:sent#004F00:sent',
                   'LINE1:recv#ff69b4:recv',
                   cm_ip)
-    createLog("Created " + path_bytes)
+    	createLog("Created " + path_bytes)
 
 def graph_Network_temp(kname, ip):
     # create graphs that track numbers of bytes sent + recent
@@ -154,7 +168,9 @@ def graph_Network_temp(kname, ip):
     def4 = "DEF:recv_per_sec=/var/sys_monitoring/network_temp_" + str(kname) + "_" + datetime.datetime.now().strftime(
         '%Y-%m-%d') + ".rrd:recv_per_sec:LAST"
     cm_ip = "COMMENT:" + ip;
-    rrdtool.graph(path_bytes, '--imgformat', 'PNG',
+    file_path = path_bytes[:-3] + "rrd" 
+    if os.path.isfile(file_path):
+    	rrdtool.graph(path_bytes, '--imgformat', 'PNG',
                   '--width', '1274',
                   '--height', '346',
                   '--start', '-1d',
@@ -166,7 +182,7 @@ def graph_Network_temp(kname, ip):
                   'LINE1:sent_per_sec#004F00:sent_per_sec',
                   'LINE1:recv_per_sec#ff69b4:recv_per_sec',
                     cm_ip)
-    createLog("Created " + path_bytes)
+    	createLog("Created " + path_bytes)
 
 def main():
     graph_LoadAvg()
@@ -174,9 +190,9 @@ def main():
     graph_Swap()
     for cpu_num in range(psutil.cpu_count()):
        graph_CPU(cpu_num)
-    #graph_Processes()
-    #for k, v in psutil.net_if_addrs().items():
-      #  graph_Network(k, v[0].address)  # for each nic card, a rrdfile is created
+    graph_Processes()
+    for k, v in psutil.net_if_addrs().items():
+       graph_Network(k, v[0].address)  # for each nic card, a rrdfile is created
 
 if __name__ == '__main__':
      main()

@@ -2,7 +2,7 @@
 import os
 
 def createLog(newThing):     
-    file_name = "/var/sys_monitoring/logfile.txt "
+    file_name = '/var/sys_monitoring/logfile.txt'
     if os.path.isfile(file_name):
         f = open(file_name, "a+")
     else:
