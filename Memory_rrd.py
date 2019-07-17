@@ -49,8 +49,8 @@ def get_Memory ():
     try: 
         subprocess.check_output("rrdtool update /var/sys_monitoring/memory_%s.rrd -t used:percent:active:inactive:buffers:cached:available:free:shared %s:%s:%s:%s:%s:%s:%s:%s:%s:%s\n" % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, virtual_memory()["used"], virtual_memory()["percent"], virtual_memory()["active"], virtual_memory()["inactive"], virtual_memory()["buffers"], virtual_memory()["cached"], virtual_memory()["available"], virtual_memory()["free"], virtual_memory()["shared"]), shell=True)
     except subprocess.CalledProcessError as err: 
-        createLog(str(err.returncode) + ": " + err.output + " while update Memory at " + timing)
-
+        createLog(str(err.returncode) + ": " + str(err.output) + " while update Memory at " + timing)
+        
 def swap_memory():
     swap = psutil.swap_memory()
     swap_dict = {
@@ -69,7 +69,7 @@ def get_Swap():
         f = open(file_name, "a+")
     else:
         f = open(file_name, "w+")
-    file_rrd = "/var/sys_monitoring/swap_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd";
+    file_rrd = "/var/sys_monitoring/swap_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd"
 
     try:
         check_file = open(file_rrd, 'r')
@@ -84,7 +84,7 @@ def get_Swap():
     try: 
         subprocess.check_output("rrdtool update /var/sys_monitoring/swap_%s.rrd -t total:used:free:percent:sin:sout %s:%s:%s:%s:%s:%s:%s\n" % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, swap_memory()["total"], swap_memory()["used"], swap_memory()["free"], swap_memory()["percent"], swap_memory()["sin"], swap_memory()["sout"]), shell=True)
     except subprocess.CalledProcessError as err: 
-        createLog(err.returncode + ": " + err.output + " while update Swap at " + timing)
+        createLog(str(err.returncode) + ": " + str(err.output) + " while update Swap at " + timing)
 
     
 def main():

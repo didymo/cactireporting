@@ -2,6 +2,7 @@
 import os
 import datetime
 import time
+import subprocess
 import psutil
 from pathlib import Path
 from create_rrdfiles import create_Network
@@ -34,18 +35,19 @@ def update_Network():
         f = open(file_name, "w+")
     timing = str(int(time.time()))[:-1] + "0"
     for iface in networks: #for each nic card, system will write
-        file_rrd = "/var/sys_monitoring/network_" + iface['iface'] + "_"  + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd";
-
+        file_rrd = "/var/sys_monitoring/network_" + iface['iface'] + "_"  + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd"
         try:
             check_file = open(file_rrd, 'r')
         except FileNotFoundError:
             create_Network(iface['iface'], str(int(time.time()) - 60)[:-1] + "0")  # create a file 60sec before so its updating
         f.write("TEMPORARY CREATED at "+ str(int(time.time()) - 60)[:-1] + "0" +  " 60 seconds before " + str(int(time.time()))[:-1] +"0" + "\n")
-
         f.write("rrdtool update /var/sys_monitoring/network_%s_%s.rrd -t sent:recv %s:%f:%f\n"
-        % (iface['iface'], datetime.datetime.now().strftime('%Y-%m-%d'), timing, iface["sent"], iface["recv"]))
-        os.system(("rrdtool update /var/sys_monitoring/network_%s_%s.rrd -t sent:recv %s:%f:%f\n"
-        % (iface['iface'], datetime.datetime.now().strftime('%Y-%m-%d'), timing, iface["sent"], iface["recv"])))
+% (iface['iface'], datetime.datetime.now().strftime('%Y-%m-%d'), timing, iface["sent"], iface["recv"]))
+        try:
+            subprocess.check_output("rrdtool update /var/sys_monitoring/network_%s_%s.rrd -t sent:recv %s:%f:%f\n"
+        % (iface['iface'], datetime.datetime.now().strftime('%Y-%m-%d'), timing, iface["sent"], iface["recv"]), shell=True)
+        except subprocess.CalledProcessError as err: 
+            createLog(str(err.returncode) + ": " + str(err.output) + " while update Network at " + timing)
     f.close()
 
 def main():

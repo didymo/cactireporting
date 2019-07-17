@@ -82,12 +82,12 @@ def main():
     create_LoadAvg(str(int(time.time())))
     create_Memory(str(int(time.time())))
     create_Swap(str(int(time.time())))
-    #for cpu_num in range(psutil.cpu_count()):
-    #    create_CPU(cpu_num, str(int(time.time())))
-    #create_Status_Processes(str(int(time.time())))
-    #for k, v in psutil.net_if_addrs().items():
-    #    create_Network(k, str(int(time.time())))#for each nic card, a rrdfile is created
-    #    create_Network_temp(k, str(int(time.time())))
+    for cpu_num in range(psutil.cpu_count()):
+        create_CPU(cpu_num, str(int(time.time())))
+    create_Status_Processes(str(int(time.time())))
+    for k, v in psutil.net_if_addrs().items():
+        create_Network(k, str(int(time.time())))#for each nic card, a rrdfile is created
+        create_Network_temp(k, str(int(time.time())))
 
 
 if __name__ == '__main__':

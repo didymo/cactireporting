@@ -57,13 +57,11 @@ def get_Running_Sleeping_Idle(running, sleeping, idle):
     f.write("rrdtool update /var/sys_monitoring/processes_%s.rrd -t running:sleeping:idle %s:%d:%d:%d\n"
         % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, running, sleeping, idle))
 	#write the rrdtool update syntax to update_processes_DATE.txt 
-"""
     try: #check terminal return of RRDTOOL UPDATE 
         subprocess.check_output("rrdtool update /var/sys_monitoring/processes_%s.rrd -t running:sleeping:idle %s:%d:%d:%d\n"
         % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, running, sleeping, idle))
     except subprocess.CalledProcessError as err: #write terminal return in 'logfile.txt '
-        createLog(str(err.returncode) + ": " + err.output + " while update CPU at " + timing)
-"""
+        createLog(str(err.returncode) + ": " + str(err.output) + " while update CPU at " + timing)
 def write_Running_Sleeping_Idle(list_processes, csv_path):
     try:
         with open(csv_path, 'w') as csvfile:

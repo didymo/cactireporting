@@ -14,8 +14,7 @@ def getLoadAvg():
         f = open(file_name, "a+")
     else:
         f = open(file_name, "w+")
-    file_rrd = "/var/sys_monitoring/loadavg_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd";
-
+    file_rrd = "/var/sys_monitoring/loadavg_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd"
     try:
         check_file = open(file_rrd, 'r')
     except FileNotFoundError:
@@ -30,7 +29,7 @@ def getLoadAvg():
         subprocess.check_output("rrdtool update /var/sys_monitoring/loadavg_%s.rrd -t load_1min:load_5min:load_15min %s:%.2f:%.2f:%.2f\n"
           % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, load_avg[0], load_avg[1], load_avg[2]), shell=True)
     except subprocess.CalledProcessError as err: 
-        createLog(str(err.returncode) + ": " + err.output + " while update LoadAvg at " + timing)
+        createLog(str(err.returncode) + ": " + str(err.output) + " while update LoadAvg at " + timing)
 
     
 def main():
