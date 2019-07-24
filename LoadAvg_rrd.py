@@ -9,7 +9,7 @@ from createLogFile import createLog
 
 def getLoadAvg():
     load_avg = os.getloadavg()  # this results in tuplpe of 3 values loadavg_1min loadavg_5mins loadavg_15mins
-    file_name = "/var/sys_monitoring/update_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".txt"
+    file_name = "/var/sys_monitoring/update_loadavg_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".txt"
     if os.path.isfile(file_name):
         f = open(file_name, "a+")
     else:

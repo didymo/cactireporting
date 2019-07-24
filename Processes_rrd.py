@@ -45,7 +45,7 @@ def get_Running_Sleeping_Idle(running, sleeping, idle):
         f = open(file_name, "a+")
     else:
         f = open(file_name, "w+")
-    file_rrd = "/var/sys_monitoring/processes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd";
+    file_rrd = "/var/sys_monitoring/processes_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd"
 
     try:#try IF processes_DATE.rrd file exists 
         check_file = open(file_rrd, 'r')
@@ -59,7 +59,7 @@ def get_Running_Sleeping_Idle(running, sleeping, idle):
 	#write the rrdtool update syntax to update_processes_DATE.txt 
     try: #check terminal return of RRDTOOL UPDATE 
         subprocess.check_output("rrdtool update /var/sys_monitoring/processes_%s.rrd -t running:sleeping:idle %s:%d:%d:%d\n"
-        % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, running, sleeping, idle))
+        % (datetime.datetime.now().strftime('%Y-%m-%d'), timing, running, sleeping, idle), shell=True)
     except subprocess.CalledProcessError as err: #write terminal return in 'logfile.txt '
         createLog(str(err.returncode) + ": " + str(err.output) + " while update CPU at " + timing)
 def write_Running_Sleeping_Idle(list_processes, csv_path):

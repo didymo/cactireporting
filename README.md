@@ -9,7 +9,6 @@
 */5 * * * * python3 /home/minh/PycharmProjects/Uptime-like_Information/venv/Memory_rrd.py
 */5 * * * * python3 /home/minh/PycharmProjects/Uptime-like_Information/venv/Processor_rrd.py
 */5 * * * * python3 /home/minh/PycharmProjects/Uptime-like_Information/venv/Network_rrd.py
-#*/5 * * * * python3 /home/minh/PycharmProjects/Uptime-like_Information/venv/Network_temp_rrd.py
 
 # at every 12:00am of everyday 
 0 0 * * * python3 /home/minh/PycharmProjects/Uptime-like_Information/venv/create_rrdfiles.py
