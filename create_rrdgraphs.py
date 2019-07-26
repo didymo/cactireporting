@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import datetime
 import os
 import sys
@@ -183,6 +184,23 @@ def graph_Network_temp(kname, ip):
                   'LINE1:recv_per_sec#ff69b4:recv_per_sec',
                     cm_ip)
     	createLog("Created " + path_bytes)
+def graph_WaitIO():
+    path = "/var/sys_monitoring/diskwaitIO" + datetime.datetime.now().strftime('%Y-%m-%d') + ".png"
+    def1 = "DEF:load_1min=/var/sys_monitoring/diskwait_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:CPU0:LAST"
+    def2 = "DEF:load_5min=/var/sys_monitoring/diskwait_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd:CPU1:LAST"
+    file_path = path[:-3] + "rrd"
+    if os.path.isfile(file_path):
+    	rrdtool.graph(path, '--imgformat', 'PNG',
+                  '--width', '1274',
+                  '--height', '346',
+                  '--start', '-1d',
+                  '--end', str(int(time.time())),
+                  '--vertical-label', 's',
+                  '--title', 'Disk IO Wait time', def1, def2, 
+                  'LINE1:CPU0#0000FF:CPU0',
+                  'LINE1:CPU1#ff69b4:CPU1')
+    	createLog("Created " + path)
+
 
 def main():
     graph_LoadAvg()
@@ -193,6 +211,7 @@ def main():
     graph_Processes()
     for k, v in psutil.net_if_addrs().items():
        graph_Network(k, v[0].address)  # for each nic card, a rrdfile is created
+    graph_WaitIO()
 
 if __name__ == '__main__':
      main()

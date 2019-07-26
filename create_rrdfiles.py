@@ -62,13 +62,12 @@ def create_Network(kname, time_create):
                    data_sources_bytes, "RRA:LAST:0.5:1:144")
     createLog("Created " + file_name_bytes)
 
-def create_Network_temp(kname, time_create):
-    data_sources_bytes = ['DS:sent:GAUGE:600:0:U', 'DS:recv:GAUGE:600:0:U',
-                          'DS:sent_per_sec:GAUGE:600:0:U', 'DS:recv_per_sec:GAUGE:600:0:U']
-    file_name_bytes = "/var/sys_monitoring/network_temp_" + str(kname) + "_" + datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd"
-    rrdtool.create(file_name_bytes, "--start", time_create, "--step", "600",
-                   data_sources_bytes, "RRA:LAST:0.5:1:144")
-    createLog("Created " + file_name_bytes)
+def create_WaitIO(time_create):
+    data_sources = ['DS:CPU0:GAUGE:600:0:U', 'DS:CPU1:GAUGE:600:0:U']
+    file_name = "/var/sys_monitoring/diskwait_"+ datetime.datetime.now().strftime('%Y-%m-%d') + ".rrd"
+    rrdtool.create(file_name, "--start", time_create, "--step", "600",
+                   data_sources, "RRA:LAST:0.5:1:144")
+    createLog("Created " + file_name)
 
 def create_Disk_Storage(time_create):
     data_sources_bytes = ['DS:used:GAUGE:600:0:U', 'DS:free:GAUGE:600:0:U',
@@ -87,8 +86,7 @@ def main():
     create_Status_Processes(str(int(time.time())))
     for k, v in psutil.net_if_addrs().items():
         create_Network(k, str(int(time.time())))#for each nic card, a rrdfile is created
-        create_Network_temp(k, str(int(time.time())))
-
+    create_WaitIO(str(int(time.time())))
 
 if __name__ == '__main__':
      main()
