@@ -9,11 +9,10 @@
 5 * * * * python3 /Processor_rrd.py
 5 * * * * python3 /Network_rrd.py
 
-# at every 12:00am of everyday 
-0 0 * * * python3 /create_rrdfiles.py
+#at every 23:59 of everyday, create the report of the day today + create rrd files for next day
+0 0 * * * python3 /home/minh/PycharmProjects/Uptime-like_Information/venv/create_rrdfiles.py
+59 23 * * * python3 /home/minh/PycharmProjects/Uptime-like_Information/venv/create_rrdgraphs.py
 
-#at every 23:59 of everyday, create the report of the day today 
-59 23 * * * python3 /create_rrdgraphs.py
 
 # For more information see the manual pages of crontab(5) and cron(8)
 # 
