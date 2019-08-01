@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import psutil
 from create_rrdfiles import create_WaitIO #NEED TO CREATE THIS IN CREATE_RRDFILES.PY
+from createLogFile import createLog
 
 def get_WaitIO():
     cpus_percent_list = [] #this is a list of dictionaries where each dictionary contains a CPU$
