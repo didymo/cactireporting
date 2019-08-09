@@ -1,3 +1,12 @@
+--------------Environment-------------
+- Python3 
+- Pillow (PIL support for Python3) 
+
+
+
+
+----------- CRONTAB ------------------
+
 # at 5 a.m every week with:
 # at every minute of the day 
 * * * * * python3 /LoadAvg_rrd.py
